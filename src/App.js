@@ -1,22 +1,45 @@
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
+import axios from 'axios';
 import './App.css';
 
-function App() {
+const App = () => {
+  
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState([]);
+
+  const baseUrl = 'http://localhost:9192';
+
+  useEffect(() => {
+    setLoading(true);
+
+    fetch(baseUrl + '/users/all')
+      .then(response => response.json())
+      .then(data => {
+        setUsers(data);
+        setLoading(false);
+      })
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <div className='App-intro'>
+          <h2>Users</h2>
+          {
+            users.map(user => 
+              <div key={user.id}>
+                <p>{user.firstName}</p>
+                <p>{user.email}</p>
+              </div>
+            )
+          }   
+      </div>
       </header>
     </div>
   );
